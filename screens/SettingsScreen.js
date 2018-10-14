@@ -84,7 +84,7 @@ export default class SettingsScreen extends React.Component {
         return(
             <View style={styles.container}>
                 <ScrollView>
-                    <ImageBackground source={require ('../assets/images/UploadIMG.png')}
+                    <ImageBackground source={{uri: image}}
                                      reSizeMode= 'stretch'
                                      blurRadius={2}
                                      style={styles.imgUpload}>

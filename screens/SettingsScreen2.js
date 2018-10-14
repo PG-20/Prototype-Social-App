@@ -4,10 +4,12 @@ import {
     Text,
     TouchableOpacity,
     Image,
-    View
+    View,
+    FlatList,
 } from 'react-native';
 import qr from '../assets/images/qrsearch.png'
 import {connect} from "react-redux";
+import {List,ListItem} from 'react-native-elements';
 
 
 class SettingsScreen2 extends React.Component {
@@ -29,20 +31,68 @@ class SettingsScreen2 extends React.Component {
         this.setState({friendsTabClicked: true})
     }
 
+    renderSeparator() {
+        return (
+            <View
+                style={{
+                    height: 1,
+                    backgroundColor: "#CED0CE",
+                }}
+            />
+        );
+    };
+
+    flatlistItem(item){
+        return(
+            <TouchableOpacity>
+                <ListItem
+                    roundAvatar
+                    avatar={{uri: item.profile_pic_url}}
+                    title={item.username}
+                    containerStyle={{borderBottomWidth: 0}}
+                    hideChevron={true}
+                />
+            </TouchableOpacity>
+        )}
+
+
+    renderFlatlist() {
+        if (this.state.friendsTabClicked) {
+            return (
+                <List containerStyle={{ borderTopWidth: 0 ,borderBottomWidth: 1, borderBottomColor: '#CED0CE' }}>
+                    <FlatList
+                        data={this.props.friendsList.result}
+                        renderItem={({item}) => this.flatlistItem(item)}
+                        keyExtractor={(item) => item.user_id}
+                        ItemSeparatorComponent={this.renderSeparator}
+                    />
+                </List>
+            )
+        }
+    }
     render() {
         return(
             <View style={styles.container}>
                 <View style={styles.tabs}>
-                    <TouchableOpacity style={this.state.friendsTabClicked?styles.blank: [styles.blank,{backgroundColor: '#3030ff'}]} onPress={() => this.setState({friendsTabClicked: false})}>
+                    <TouchableOpacity style={this.state.friendsTabClicked
+                                                ? styles.blank
+                                                : [styles.blank,{backgroundColor: '#3030ff'}]}
+                                      onPress={() => this.setState({friendsTabClicked: false})}>
                         <View>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={this.state.friendsTabClicked? styles.friendsTab: styles.friendsTabPressed } onPress={() => this.friendsClicked()}>
+                    <TouchableOpacity style={this.state.friendsTabClicked
+                                                ? styles.friendsTab
+                                                : styles.friendsTabPressed }
+                                      onPress={() => this.friendsClicked()}>
                         <View>
-                            <Text style={this.state.friendsTabClicked?styles.friendsText: [styles.friendsText,{color: 'black'}]}>Friends</Text>
+                            <Text style={this.state.friendsTabClicked
+                                            ? styles.friendsText
+                                            : [styles.friendsText,{color: 'black'}]}>Friends</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
+                {this.renderFlatlist()}
             </View>
         )
     }

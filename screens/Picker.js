@@ -3,27 +3,68 @@ import {
     StyleSheet,
     Text,
     TouchableOpacity,
+    ImageBackground,
+    Image,
     View,
+    FlatList, Dimensions,
 } from 'react-native';
 import {connect} from "react-redux";
+import {LinearGradient} from 'expo'
+let deviceWidth = Dimensions.get('window').width;
+let deviceHeight = Dimensions.get('window').height;
+
 
 class Picker extends React.Component {
     static navigationOptions = {
-        title: 'HI',
+        title: 'HjI',
     };
 
     constructor(props){
         super(props);
         this.state={
             list: [true,false,false,false]
-        }
+        };
+    }
 
-        console.log(this.props.allAvailableHashtag);
+    flatlistItem(item){
+        console.log(item.url);
+        return(
+            <TouchableOpacity style={{width: deviceWidth/3, marginTop: 21}}>
+
+                    <ImageBackground source={{uri: item.url}}
+                                     style={{width: deviceWidth/3,
+                                            height: 150,
+                                            margin: 1}}
+                    resizeMode='stretch'
+                    >
+                        <LinearGradient colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.7)']}
+                                        style={{justifyContent: 'center',
+                                                height: 150}}>
+                            <Text style={{textAlign: "center", color: 'white'} }>{item.name_en}</Text>
+                        </LinearGradient>
+                    </ImageBackground>
+            </TouchableOpacity>
+        )
+    }
+
+    renderFlatlist(){
+        let a=Object.values(this.props.allAvailableHashtag).reverse();
+        a.push([]);
+        let f_data=(a)[3-(this.state.list.indexOf(true))];
+        console.log(f_data);
+        return(
+            <FlatList
+                data={f_data}
+                renderItem={({item}) => this.flatlistItem(item)}
+                keyExtractor={(item) => item.hashtag_id}
+                horizontal={true}
+            />
+        )
     }
 
     render() {
-        var col = ['black', '#3030ff', '#00ba00', '#ff0000'];
-        var tabstyle = [{},styles.bluetab, styles.greentab, styles.redtab];
+        let col = ['black', '#3030ff', '#00ba00', '#ff0000'];
+        let tabstyle = [{},styles.bluetab, styles.greentab, styles.redtab];
         return(
             <View style={styles.container}>
                 <View style={[styles.picker,{borderColor: col[this.state.list.indexOf(true)]}]}>
@@ -62,6 +103,7 @@ class Picker extends React.Component {
                                               :col[this.state.list.indexOf(true)]}]}>Item</Text>
                     </TouchableOpacity>
                 </View>
+                {this.renderFlatlist()}
             </View>
         )
     }

@@ -24,9 +24,10 @@ let {deviceHeight, deviceWidth }= Dimensions.get('window');
 const Form = t.form.Form;
 
 let User = t.struct({
-        password: t.String,
+
         phone: t.Number,
-});
+password: t.String,
+    });
 
 const formStyles = {
     ...Form.stylesheet,
