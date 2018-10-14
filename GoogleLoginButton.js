@@ -27,7 +27,6 @@ export default class GoogleLoginButton extends Component {
     login() {
         GoogleUtil.setup().then(() => {
             GoogleUtil.login((err,data) => {
-                console.log("in");
                 this.handleLogin(err, data);
                 this.setState({status: true})
             });
@@ -35,7 +34,6 @@ export default class GoogleLoginButton extends Component {
     }
 
     logout() {
-        console.log("logout");
         GoogleUtil.logout((err, data) => {
             this.setState({status:false});
             this.handleLogin(err, data);
@@ -58,7 +56,6 @@ export default class GoogleLoginButton extends Component {
 
     render(){
 
-        console.log(this.state);
         const text = this.state.text;
         return (
 

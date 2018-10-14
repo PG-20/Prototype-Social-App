@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import {connect} from "react-redux";
 import {LinearGradient} from 'expo'
+import NotificationPopup from 'react-native-push-notification-popup';
+
 let deviceWidth = Dimensions.get('window').width;
 let deviceHeight = Dimensions.get('window').height;
 
@@ -22,28 +24,38 @@ class Picker extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            list: [true,false,false,false]
+            list: [true,false,false,false],
+            phone: '',
+            code: ''
         };
     }
 
-    flatlistItem(item){
-        console.log(item.url);
-        return(
-            <TouchableOpacity style={{width: deviceWidth/3, marginTop: 21}}>
+    componentDidMount() {
+        this.popup.show({
+            onPress: function() {console.log('Pressed')},
+            appTitle: 'Some App',
+            timeText: 'Now',
+            title: 'Hello World',
+            body: 'This is a sample message.\nTesting emoji 😀',
+        });
+    }
 
-                    <ImageBackground source={{uri: item.url}}
-                                     style={{width: deviceWidth/3,
-                                            height: 150,
-                                            margin: 1}}
-                    resizeMode='stretch'
-                    >
-                        <LinearGradient colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.7)']}
-                                        style={{justifyContent: 'center',
-                                                height: 150}}>
-                            <Text style={{textAlign: "center", color: 'white'} }>{item.name_en}</Text>
-                        </LinearGradient>
-                    </ImageBackground>
-            </TouchableOpacity>
+    flatlistItem(item){
+        return(
+            <ImageBackground source={{uri: item.url}}
+                             style={{width: deviceWidth/3,
+                                    height: 150,
+                                    margin: 1}}
+                             resizeMode='stretch'>
+                <TouchableOpacity>
+                    <LinearGradient colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.7)']}
+                                    style={{justifyContent: 'center',
+                                            height: 150}}>
+                        <Text style={{textAlign: "center", color: 'white'} }>{item.name_en}</Text>
+                    </LinearGradient>
+                </TouchableOpacity>
+            </ImageBackground>
+
         )
     }
 
@@ -51,7 +63,6 @@ class Picker extends React.Component {
         let a=Object.values(this.props.allAvailableHashtag).reverse();
         a.push([]);
         let f_data=(a)[3-(this.state.list.indexOf(true))];
-        console.log(f_data);
         return(
             <FlatList
                 data={f_data}
@@ -61,6 +72,8 @@ class Picker extends React.Component {
             />
         )
     }
+
+
 
     render() {
         let col = ['black', '#3030ff', '#00ba00', '#ff0000'];
@@ -102,6 +115,9 @@ class Picker extends React.Component {
                                               ?'white'
                                               :col[this.state.list.indexOf(true)]}]}>Item</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity>
+                    </TouchableOpacity>
+                    <NotificationPopup ref={ref => this.popup = ref} />
                 </View>
                 {this.renderFlatlist()}
             </View>
@@ -180,7 +196,7 @@ const styles = StyleSheet.create({
 
     pickerText:{
         textAlign: 'center',
-        fontSize: 16,
+        fontSize: 18,
     }
 
 

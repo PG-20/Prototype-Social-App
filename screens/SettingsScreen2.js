@@ -10,6 +10,7 @@ import {
 import qr from '../assets/images/qrsearch.png'
 import {connect} from "react-redux";
 import {List,ListItem} from 'react-native-elements';
+import CountryPicker from "react-native-country-picker-modal";
 
 
 class SettingsScreen2 extends React.Component {
@@ -23,13 +24,17 @@ class SettingsScreen2 extends React.Component {
             friendsTabClicked: false,
         };
         this.friendsClicked=this.friendsClicked.bind(this);
-
-        console.log(this.props.friendsList);
     }
 
     friendsClicked(){
         this.setState({friendsTabClicked: true})
     }
+
+    _changeCountry = (country) => {
+        this.setState({ country });
+        this.refs.form.refs.textInput.focus();
+    };
+
 
     renderSeparator() {
         return (
@@ -70,6 +75,7 @@ class SettingsScreen2 extends React.Component {
             )
         }
     }
+
     render() {
         return(
             <View style={styles.container}>

@@ -9,21 +9,12 @@ import {
     ImageBackground,
     ScrollView,
     Platform,
-    TouchableHighlight
+    TouchableHighlight, TextInput
 } from 'react-native';
 import { ImagePicker, Permissions } from 'expo';
 
-import t from 'tcomb-form-native';
-
-const Form = t.form.Form;
-
-let User = t.struct({
-        username: t.String,
-        email: t.String,
-        password: t.String,
-        phone: t.Number,
-    }
-);
+import Form from 'react-native-form';
+import CountryPicker from "react-native-country-picker-modal";
 
 let deviceWidth = Dimensions.get('window').width;
 let deviceHeight = Dimensions.get('window').height;
@@ -33,14 +24,60 @@ export default class SettingsScreen extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            image : null,
+            image : '',
+            received: false,
             email: "",
             phone: 0,
             password: "",
             username: "",
+            enterCode: false,
+            country: {
+                cca2: 'US',
+                callingCode: '1'
+            }
         };
-        this.onSignUp=this.onSignUp.bind(this);
         this.pickImage=this.pickImage.bind(this);
+    };
+
+    _changeCountry = (country) => {
+        this.setState({ country });
+        this.refs.form.refs.textInput.focus();
+    };
+
+
+    _renderCountryPicker = () => {
+
+        if (this.state.enterCode)
+            return (
+                <View />
+            );
+
+        return (
+            <CountryPicker
+                ref={'countryPicker'}
+                closeable
+                style={styles.countryPicker}
+                onChange={this._changeCountry}
+                cca2={this.state.country.cca2}
+                styles={countryPickerCustomStyles}
+                translation='eng'/>
+        );
+
+    };
+
+    _renderCallingCode = () => {
+
+        if (this.state.enterCode)
+            return (
+                null
+            );
+
+        return (
+            <View style={styles.callingCodeView}>
+                <Text style={styles.callingCodeText}>+{this.state.country.callingCode}</Text>
+            </View>
+        );
+
     };
 
     pickImage = async() => {
@@ -50,56 +87,72 @@ export default class SettingsScreen extends React.Component {
             Permissions.askAsync(Permissions.CAMERA_ROLL)
         ]);
 
-        console.log("here");
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: 'Images',
         });
 
-        console.log("there");
-        console.log(result);
-
         if (!result.cancelled) {
-            this.setState({ image: result.uri });
+            this.setState({ image: result.uri, received: true });
         }
         else {
             console.log("Camera permission denied")
         }
     };
 
-    onSignUp() {
-        var value = this.refs.form.getValue();
-        if (value) {
-            this.setState({
-                email: value.email,
-                phone: value.phone,
-                password: value.password,
-                username: value.username
-            })
-        }
-    };
-
     render() {
 
         let image = this.state.image;
+
+        let textStyle = this.state.enterCode ? {
+            height: 50,
+            textAlign: 'center',
+            fontSize: 40,
+            fontWeight: 'bold',
+            fontFamily: 'Courier'
+        } : {};
+
         return(
             <View style={styles.container}>
                 <ScrollView>
                     <ImageBackground source={{uri: image}}
                                      reSizeMode= 'stretch'
-                                     blurRadius={2}
+                                     blurRadius={5}
                                      style={styles.imgUpload}>
                         <TouchableOpacity onPress={this.pickImage}>
                             <View style={styles.uploadButton}>
-                                {!image && <Image source={require ('../assets/images/UploadIMG.png')} style={{width:100, height: 100, borderRadius: 50}}/>}
-                                {image && <Image source={{ uri: image }} style={{ width: 100, height: 100 , borderRadius: 50}} />}
+                                {!this.state.received && <Image source={require ('../assets/images/UploadIMG.png')} style={{width:100, height: 100, borderRadius: 50}}/>}
+                                {this.state.received && <Image source={{ uri: image }} style={{ width: 100, height: 100 , borderRadius: 50}} />}
                             </View>
                         </TouchableOpacity>
                     </ImageBackground>
 
-                    <View>
-                        <Form ref="form" type={User} options={options}/>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Form ref={'form'} style={styles.form}>
+                            <View style={{ flexDirection: 'row' }}>
 
-                        <TouchableHighlight style={styles.button2} onPress={this.onSignUp} underlayColor='#99d9f4'>
+                                {this._renderCountryPicker()}
+                                {this._renderCallingCode()}
+
+                                <TextInput
+                                    ref={'textInput'}
+                                    name={this.state.enterCode ? 'code' : 'phoneNumber' }
+                                    type={'TextInput'}
+                                    underlineColorAndroid={'transparent'}
+                                    autoCapitalize={'none'}
+                                    autoCorrect={false}
+                                    placeholder={this.state.enterCode ? '_ _ _ _ _ _' : 'Phone Number'}
+                                    keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
+                                    style={[ styles.textInput, textStyle ]}
+                                    returnKeyType='go'
+                                    autoFocus
+                                    placeholderTextColor={brandColor}
+                                    selectionColor={brandColor}
+                                    maxLength={this.state.enterCode ? 6 : 20}/>
+
+                            </View>
+                        </Form>
+
+                        <TouchableHighlight style={styles.button2} underlayColor='#99d9f4'>
                             <Text style={styles.buttonText}>Sign Up</Text>
                         </TouchableHighlight>
                     </View>
@@ -150,71 +203,25 @@ const styles = StyleSheet.create({
 
 });
 
+// if you want to customize the country picker
+const countryPickerCustomStyles = {};
 
-const formStyles = {
-    ...Form.stylesheet,
+// your brand's theme primary color
+const brandColor = '#744BAC';
 
-    textbox: {
-        normal: {
-            alignSelf: 'center',
-            color: "#000000",
-            fontSize: 17,
-            height: 36,
-            width: deviceWidth - 30,
-            paddingVertical: Platform.OS === "ios" ? 7 : 0,
-            paddingHorizontal: 7,
-            borderBottomWidth: 1,
-            borderBottomColor: 'blue',
-            marginBottom: 5,
-        },
-
-        error: {
-            alignSelf: 'center',
-            color: "#000000",
-            fontSize: 17,
-            height: 36,
-            width: deviceWidth - 30,
-            paddingVertical: Platform.OS === "ios" ? 7 : 0,
-            paddingHorizontal: 7,
-            borderBottomWidth: 1,
-            borderBottomColor: 'red',
-            marginBottom: 5,
-        },
-    },
-
-    controlLabel: {
-        normal: {
-            color: "blue",
-            fontSize: 16,
-            marginBottom: 7,
-            marginTop: 5,
-            fontWeight: "200",
-            paddingHorizontal: 15,
-        },
-
-        error: {
-            color: "red",
-            fontSize: 16,
-            marginBottom: 7,
-            marginTop: 5,
-            fontWeight: "200",
-            paddingHorizontal: 15,
-        },
-    },
-};
-
-const options = {
-    stylesheet: formStyles,
-    fields: {
-        email: {
-            keyboardType: 'email-address',
-        },
-        password: {
-            password: true,
-            secureTextEntry: true,
-        },
-        phone:{
-            keyboardType: 'numeric',
-        }
-    },
-};
+//
+// const options = {
+//     stylesheet: formStyles,
+//     fields: {
+//         email: {
+//             keyboardType: 'email-address',
+//         },
+//         password: {
+//             password: true,
+//             secureTextEntry: true,
+//         },
+//         phone:{
+//             keyboardType: 'numeric',
+//         }
+//     },
+// };

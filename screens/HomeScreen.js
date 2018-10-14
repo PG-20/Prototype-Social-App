@@ -140,7 +140,6 @@ class HomeScreen extends React.Component {
             });
 
             if (result.type === 'success') {
-                console.log(result);
                 return result;
             } else {
                 return {cancelled: true};
