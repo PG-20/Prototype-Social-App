@@ -5,26 +5,28 @@ import {
     TouchableOpacity,
     TouchableHighlight,
     View,
-    TextInput, Dimensions, Platform,Image,
+    Dimensions,
+    Platform,
+    Image
 } from 'react-native';
 
 import fblogo from '../assets/images/fblogo.png'
 
-
 import t from 'tcomb-form-native';
-import GoogleLogin from "../GoogleLoginButton";
 import {getAllAvailableHashtag, getFriendsList} from "../api";
 import {connect} from "react-redux";
-import { Facebook } from 'expo';
+import { Facebook, Google } from 'expo';
+import glogo from "../assets/images/google.png";
 
-let deviceWidth = Dimensions.get('window').width;
-let deviceHeight = Dimensions.get('window').height;
+
+let {deviceHeight, deviceWidth }= Dimensions.get('window');
+
 const Form = t.form.Form;
 
 let User = t.struct({
         password: t.String,
         phone: t.Number,
-    });
+});
 
 const formStyles = {
     ...Form.stylesheet,
@@ -40,7 +42,7 @@ const formStyles = {
             paddingHorizontal: 7,
             borderBottomWidth: 1,
             borderBottomColor: 'white',
-            marginBottom: 5,
+            marginBottom: 5
         },
 
         error: {
@@ -108,10 +110,8 @@ class HomeScreen extends React.Component {
         this.props.getHashtag();
 
         this.onLogin=this.onLogin.bind(this);
-        // this.handleFacebookLogin = this.handleFacebookLogin.bind(this);
-        // this.FBGraphRequest = this.FBGraphRequest.bind(this);
-        // this.FBLoginCallback = this.FBLoginCallback.bind(this);
         this.facebookLogIn= this.facebookLogIn.bind(this);
+        this.googleLogIn = this.googleLogIn.bind(this);
     }
 
     async facebookLogIn() {
@@ -128,6 +128,24 @@ class HomeScreen extends React.Component {
                 'Logged in! ' +
                 `Hi ${(await response.json()).name}!`,
             );
+        }
+    }
+    async googleLogIn() {
+        try {
+            const result = await Google.logInAsync({
+                androidClientId: "646248863161-g4ethrgs56h9ftbfo6pv8b31m5nj1kmb.apps.googleusercontent.com",
+                iosClientId: "646248863161-tanc3558klnklvpcnksp2p5afr2aar8f.apps.googleusercontent.com",
+                scopes: ['profile', 'email'],
+            });
+
+            if (result.type === 'success') {
+                console.log(result);
+                return result;
+            } else {
+                return {cancelled: true};
+            }
+        } catch(e) {
+            return {error: true};
         }
     }
 
@@ -158,30 +176,9 @@ class HomeScreen extends React.Component {
                         <TouchableOpacity onPress={this.facebookLogIn} style={{margin: 5}}>
                             <Image source={fblogo} style={{height: 100, width: 100}}/>
                         </TouchableOpacity>
-                        {/*<GoogleLogin*/}
-                            {/*onLogin={*/}
-                                {/*(result) => {*/}
-                                    {/*console.log("entering");*/}
-                                    {/*if (result.message) {*/}
-                                        {/*alert('error: ' + result.message);*/}
-                                        {/*console.log("fail");*/}
-                                    {/*} else {*/}
-                                        {/*alert("Login was successful " + result.name + ' - ' + result.email);*/}
-                                        {/*console.log("success");*/}
-                                    {/*}*/}
-                                {/*}*/}
-                            {/*}*/}
-                            {/*onLogout={() => alert("logged out")}*/}
-                            {/*onError={*/}
-                                {/*(result) => {*/}
-                                    {/*if (result.error) {*/}
-                                        {/*alert('error: ' + result.error)*/}
-                                    {/*} else {*/}
-                                        {/*alert(error)*/}
-                                    {/*}*/}
-                                {/*}*/}
-                            {/*}*/}
-                        {/*/>*/}
+                        <TouchableOpacity onPress={this.googleLogIn} style={{margin: 5}}>
+                            <Image source={glogo} style={{height: 100, width: 100}}/>
+                        </TouchableOpacity>
                     </View>
                     <TouchableOpacity style={styles.bottomSignUp}>
                         <View>
