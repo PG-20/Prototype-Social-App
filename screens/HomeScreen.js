@@ -15,7 +15,7 @@ import t from 'tcomb-form-native';
 import GoogleLogin from "../GoogleLoginButton";
 import {getAllAvailableHashtag, getFriendsList} from "../api";
 import {connect} from "react-redux";
-// import {AccessToken, LoginManager, GraphRequestManager, GraphRequest} from "react-native-fbsdk";
+import { Facebook } from 'expo';
 
 let deviceWidth = Dimensions.get('window').width;
 let deviceHeight = Dimensions.get('window').height;
@@ -111,31 +111,25 @@ class HomeScreen extends React.Component {
         // this.handleFacebookLogin = this.handleFacebookLogin.bind(this);
         // this.FBGraphRequest = this.FBGraphRequest.bind(this);
         // this.FBLoginCallback = this.FBLoginCallback.bind(this);
+        this.facebookLogIn= this.facebookLogIn.bind(this);
     }
 
-    // async FBLoginCallback(error, result) {
-    //     if (error) {
-    //         console.log(error);
-    //     } else {
-    //         // data from fb
-    //         console.log(result);
-    //     }
-    // }
-    //
-    // async FBGraphRequest(fields, callback) {
-    //     const accessData = await AccessToken.getCurrentAccessToken();
-    //     // Create a graph request asking for user information
-    //     const infoRequest = new GraphRequest('/me', {
-    //         accessToken: accessData.accessToken,
-    //         parameters: {
-    //             fields: {
-    //                 string: fields
-    //             }
-    //         }
-    //     }, callback.bind(this));
-    //     // Execute the graph request created above
-    //     new GraphRequestManager().addRequest(infoRequest).start();
-    // }
+    async facebookLogIn() {
+
+        const { type, token } = await Facebook.logInWithReadPermissionsAsync('255136435199421', {
+            permissions: ['public_profile', 'email', 'user_link']
+        });
+
+        if (type === 'success') {
+            // Get the user's name using Facebook's Graph API
+            const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+
+            alert(
+                'Logged in! ' +
+                `Hi ${(await response.json()).name}!`,
+            );
+        }
+    }
 
     onLogin() {
         var value = this.refs.form.getValue();
@@ -147,23 +141,6 @@ class HomeScreen extends React.Component {
         }
         console.log(this.state)
     };
-
-    // handleFacebookLogin () {
-    //     LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_link']).then(
-    //         function (result) {
-    //             if (result.isCancelled) {
-    //                 console.log('Login cancelled')
-    //             } else {
-    //                 console.log('Login success with permissions: ' + result.grantedPermissions.toString());
-    //             }
-    //         },
-    //         function (error) {
-    //             console.log('Login fail with error: ' + error)
-    //         },
-    //         this.FBGraphRequest('id, email, picture.type(large), name, link', this.FBLoginCallback)
-    //     )
-    //
-    // }
 
     render() {
         return (
@@ -178,7 +155,7 @@ class HomeScreen extends React.Component {
                     </TouchableHighlight>
                     <Text style={[styles.logIn, styles.text]}>Or Sign up with</Text>
                     <View style={styles.signupthirdparty}>
-                        <TouchableOpacity onPress={this.handleFacebookLogin} style={{margin: 5}}>
+                        <TouchableOpacity onPress={this.facebookLogIn} style={{margin: 5}}>
                             <Image source={fblogo} style={{height: 100, width: 100}}/>
                         </TouchableOpacity>
                         {/*<GoogleLogin*/}

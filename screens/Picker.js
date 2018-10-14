@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         borderBottomLeftRadius: 5,
         borderTopLeftRadius: 5,
-    borderColor: 'black',
+        borderColor: 'black',
     },
     midtab: {
         flex: 1,
