@@ -161,6 +161,7 @@ class HomeScreen extends React.Component {
     };
 
     render() {
+        const { navigate } = this.props.navigation;
         return (
             <View style={styles.container}>
                     <Text style={styles.heading}> Go Juice</Text>
@@ -180,7 +181,7 @@ class HomeScreen extends React.Component {
                             <Image source={glogo} style={{height: 100, width: 100}}/>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.bottomSignUp}>
+                    <TouchableOpacity style={styles.bottomSignUp} onPress={() => navigate('SignUp')}>
                         <View>
                             <Text style={styles.signUp}>Sign Up Now!</Text>
                         </View>

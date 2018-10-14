@@ -27,7 +27,7 @@ export default class SettingsScreen extends React.Component {
             image : '',
             received: false,
             email: "",
-            phone: 0,
+            phone: 1,
             password: "",
             username: "",
             enterCode: false,
@@ -100,6 +100,7 @@ export default class SettingsScreen extends React.Component {
     };
 
     render() {
+        const {navigate} = this.props.navigation;
 
         let image = this.state.image;
 
@@ -154,6 +155,11 @@ export default class SettingsScreen extends React.Component {
 
                         <TouchableHighlight style={styles.button2} underlayColor='#99d9f4'>
                             <Text style={styles.buttonText}>Sign Up</Text>
+
+                        </TouchableHighlight>
+                        <TouchableHighlight style={styles.button2} onPress={() => navigate('FriendsPage')} underlayColor='#99d9f4'>
+                            <Text >Next Page</Text>
+
                         </TouchableHighlight>
                     </View>
 

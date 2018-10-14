@@ -8,6 +8,8 @@ import {
     View,
     FlatList, Dimensions,
 } from 'react-native';
+import {SearchBar} from 'react-native-elements'
+
 import {connect} from "react-redux";
 import {LinearGradient} from 'expo'
 import NotificationPopup from 'react-native-push-notification-popup';
@@ -18,13 +20,15 @@ let deviceHeight = Dimensions.get('window').height;
 
 class Picker extends React.Component {
     static navigationOptions = {
-        title: 'HjI',
+        headerTitle: <SearchBar containerStyle={{width: '100%', backgroundColor: '#eaf2f1', alignItems: 'center'}}
+                                inputStyle={{color: 'black',width: '95%', backgroundColor: 'white'}}
+                                />
     };
 
     constructor(props){
         super(props);
         this.state={
-            list: [true,false,false,false],
+            list: [false,true,false,false],
             phone: '',
             code: ''
         };
@@ -145,7 +149,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         flexDirection: 'row',
         width: '95%',
-        marginTop: 71,
+        marginTop: 50,
         height: 35,
         borderColor: 'black',
     },
