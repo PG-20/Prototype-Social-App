@@ -35,7 +35,7 @@ export default class SettingsScreen extends React.Component {
         this.state={
             image : null,
             email: "",
-            phone: 0,
+            phone: 1,
             password: "",
             username: "",
         };
@@ -67,7 +67,8 @@ export default class SettingsScreen extends React.Component {
     };
 
     onSignUp() {
-        var value = this.refs.form.getValue();
+;
+        let value = this.refs.form.getValue();
         if (value) {
             this.setState({
                 email: value.email,
@@ -79,6 +80,7 @@ export default class SettingsScreen extends React.Component {
     };
 
     render() {
+        const {navigate} = this.props.navigation;
 
         let image = this.state.image;
         return(
@@ -99,8 +101,13 @@ export default class SettingsScreen extends React.Component {
                     <View>
                         <Form ref="form" type={User} options={options}/>
 
-                        <TouchableHighlight style={styles.button2} onPress={this.onSignUp} underlayColor='#99d9f4'>
+                        <TouchableHighlight style={styles.button2} onPress={() => this.onSignUp} underlayColor='#99d9f4'>
                             <Text style={styles.buttonText}>Sign Up</Text>
+
+                        </TouchableHighlight>
+                        <TouchableHighlight style={styles.button2} onPress={() => navigate('FriendsPage')} underlayColor='#99d9f4'>
+                            <Text >Next Page</Text>
+
                         </TouchableHighlight>
                     </View>
 

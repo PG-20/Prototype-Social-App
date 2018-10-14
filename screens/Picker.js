@@ -8,6 +8,8 @@ import {
     View,
     FlatList, Dimensions,
 } from 'react-native';
+import {SearchBar} from 'react-native-elements'
+
 import {connect} from "react-redux";
 import {LinearGradient} from 'expo'
 let deviceWidth = Dimensions.get('window').width;
@@ -16,20 +18,21 @@ let deviceHeight = Dimensions.get('window').height;
 
 class Picker extends React.Component {
     static navigationOptions = {
-        title: 'HjI',
+        headerTitle: <SearchBar containerStyle={{width: '100%', backgroundColor: '#eaf2f1', alignItems: 'center'}}
+                                inputStyle={{color: 'black',width: '95%', backgroundColor: 'white'}}
+                                />
     };
 
     constructor(props){
         super(props);
         this.state={
-            list: [true,false,false,false]
+            list: [false,true,false,false]
         };
     }
 
     flatlistItem(item){
-        console.log(item.url);
         return(
-            <TouchableOpacity style={{width: deviceWidth/3, marginTop: 21}}>
+            <TouchableOpacity style={{width: deviceWidth/3, marginTop: 35}}>
 
                     <ImageBackground source={{uri: item.url}}
                                      style={{width: deviceWidth/3,
@@ -37,7 +40,7 @@ class Picker extends React.Component {
                                             margin: 1}}
                     resizeMode='stretch'
                     >
-                        <LinearGradient colors={['rgba(0,0,0,0.6)', 'rgba(0,0,0,0.7)']}
+                        <LinearGradient colors={['rgba(0,0,0,0.7)p', 'rgba(0,0,0,0.3)']}
                                         style={{justifyContent: 'center',
                                                 height: 150}}>
                             <Text style={{textAlign: "center", color: 'white'} }>{item.name_en}</Text>
@@ -51,7 +54,6 @@ class Picker extends React.Component {
         let a=Object.values(this.props.allAvailableHashtag).reverse();
         a.push([]);
         let f_data=(a)[3-(this.state.list.indexOf(true))];
-        console.log(f_data);
         return(
             <FlatList
                 data={f_data}
@@ -129,7 +131,7 @@ const styles = StyleSheet.create({
         borderWidth: 0.5,
         flexDirection: 'row',
         width: '95%',
-        marginTop: 71,
+        marginTop: 50,
         height: 35,
         borderColor: 'black',
     },

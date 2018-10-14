@@ -148,6 +148,7 @@ class HomeScreen extends React.Component {
         console.log(this.state)
     };
 
+
     // handleFacebookLogin () {
     //     LoginManager.logInWithReadPermissions(['public_profile', 'email', 'user_link']).then(
     //         function (result) {
@@ -166,6 +167,7 @@ class HomeScreen extends React.Component {
     // }
 
     render() {
+        const { navigate } = this.props.navigation;
         return (
             <View style={styles.container}>
                     <Text style={styles.heading}> Go Juice</Text>
@@ -206,7 +208,7 @@ class HomeScreen extends React.Component {
                             {/*}*/}
                         {/*/>*/}
                     </View>
-                    <TouchableOpacity style={styles.bottomSignUp}>
+                    <TouchableOpacity style={styles.bottomSignUp} onPress={() => navigate('SignUp')}>
                         <View>
                             <Text style={styles.signUp}>Sign Up Now!</Text>
                         </View>

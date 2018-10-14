@@ -3,7 +3,7 @@ import {StyleSheet, Text, View} from 'react-native';
 
 export default class LinksScreen extends React.Component {
   static navigationOptions = {
-    title: 'Links',
+    title: 'Linwbhjks',
   };
 
     constructor(props) {

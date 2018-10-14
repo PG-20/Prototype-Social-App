@@ -12,20 +12,45 @@ import {connect} from "react-redux";
 import {List,ListItem} from 'react-native-elements';
 
 
-class SettingsScreen2 extends React.Component {
-    static navigationOptions = {
-        headerRight: (<Image source={qr} style={{width: 35, height: 35, margin: 15, tintColor: 'blue',}}/>),
-    };
+class LogoTitle extends React.Component {
 
+    render() {
+        const {navigate} = this.props.navigation;
+        return (
+            <TouchableOpacity onPress={() => navigate('HashTagsPage')}>
+                <Image
+                    source={qr}
+                    style={{ width: 30, height: 30, margin: 15, tintColor: 'blue', }}
+                />
+            </TouchableOpacity>
+        );
+    }
+}
+
+
+class SettingsScreen2 extends React.Component {
     constructor(props){
-        super(props)
+        super(props);
         this.state={
             friendsTabClicked: false,
         };
         this.friendsClicked=this.friendsClicked.bind(this);
+    };
 
-        console.log(this.props.friendsList);
-    }
+    static navigationOptions = ({navigation}) => {
+        return {
+        headerRight: (
+                <TouchableOpacity onPress={() => navigation.navigate('HashTagsPage')}>
+                    <Image
+                        source={qr}
+                        style={{width: 35, height: 35, margin: 15, tintColor: 'blue',}}
+                    />
+                </TouchableOpacity>
+            )
+        }
+    };
+
+
 
     friendsClicked(){
         this.setState({friendsTabClicked: true})
