@@ -1,17 +1,18 @@
 import React from 'react';
 import {
     Dimensions,
+    Image,
+    ImageBackground,
+    Platform,
+    ScrollView,
     StyleSheet,
     Text,
+    TextInput,
+    TouchableHighlight,
     TouchableOpacity,
-    Image,
-    View,
-    ImageBackground,
-    ScrollView,
-    Platform,
-    TouchableHighlight, TextInput
+    View
 } from 'react-native';
-import { ImagePicker, Permissions } from 'expo';
+import {ImagePicker, Permissions} from 'expo';
 
 import Form from 'react-native-form';
 import CountryPicker from "react-native-country-picker-modal";
@@ -24,13 +25,12 @@ export default class SettingsScreen extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            image : '',
+            image : "",
             received: false,
             email: "",
-            phone: 1,
+            phone: "",
             password: "",
             username: "",
-            enterCode: false,
             country: {
                 cca2: 'US',
                 callingCode: '1'
@@ -40,26 +40,19 @@ export default class SettingsScreen extends React.Component {
     };
 
     _changeCountry = (country) => {
-        this.setState({ country });
-        this.refs.form.refs.textInput.focus();
+        this.setState({ country, phone: "" });
     };
 
 
     _renderCountryPicker = () => {
 
-        if (this.state.enterCode)
-            return (
-                <View />
-            );
-
         return (
             <CountryPicker
                 ref={'countryPicker'}
                 closeable
-                style={styles.countryPicker}
                 onChange={this._changeCountry}
                 cca2={this.state.country.cca2}
-                styles={countryPickerCustomStyles}
+                styles={flagStyles}
                 translation='eng'/>
         );
 
@@ -67,14 +60,9 @@ export default class SettingsScreen extends React.Component {
 
     _renderCallingCode = () => {
 
-        if (this.state.enterCode)
-            return (
-                null
-            );
-
         return (
-            <View style={styles.callingCodeView}>
-                <Text style={styles.callingCodeText}>+{this.state.country.callingCode}</Text>
+            <View style={{marginTop: 5}}>
+                <Text>+{this.state.country.callingCode}</Text>
             </View>
         );
 
@@ -127,39 +115,44 @@ export default class SettingsScreen extends React.Component {
                         </TouchableOpacity>
                     </ImageBackground>
 
-                    <View style={{ flexDirection: 'row' }}>
-                        <Form ref={'form'} style={styles.form}>
-                            <View style={{ flexDirection: 'row' }}>
-
-                                {this._renderCountryPicker()}
-                                {this._renderCallingCode()}
-
-                                <TextInput
-                                    ref={'textInput'}
-                                    name={this.state.enterCode ? 'code' : 'phoneNumber' }
-                                    type={'TextInput'}
-                                    underlineColorAndroid={'transparent'}
-                                    autoCapitalize={'none'}
-                                    autoCorrect={false}
-                                    placeholder={this.state.enterCode ? '_ _ _ _ _ _' : 'Phone Number'}
-                                    keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}
-                                    style={[ styles.textInput, textStyle ]}
-                                    returnKeyType='go'
-                                    autoFocus
-                                    placeholderTextColor={brandColor}
-                                    selectionColor={brandColor}
-                                    maxLength={this.state.enterCode ? 6 : 20}/>
-
-                            </View>
-                        </Form>
-
-                        <TouchableHighlight style={styles.button2} underlayColor='#99d9f4'>
+                    <View>
+                        <Text style={styles.loginHeading}>Username</Text>
+                        <TextInput style={styles.loginInput}
+                                   value={this.state.username}
+                                   autoCapitalize='none'
+                                   autoCorrect={false}
+                                   onChangeText={(username) => {this.setState({username: username})}}
+                                   underlineColorAndroid="transparent"/>
+                        <Text style={styles.loginHeading}>Email</Text>
+                        <TextInput style={styles.loginInput}
+                                   value={this.state.email}
+                                   autoCapitalize='none'
+                                   autoCorrect={false}
+                                   onChangeText={(email) => {this.setState({email: email})}}
+                                   underlineColorAndroid="transparent"/>
+                        <Text style={styles.loginHeading}>Password</Text>
+                        <TextInput style={styles.loginInput}
+                                   value = {this.state.password}
+                                   autoCapitalize='none'
+                                   autoCorrect={false}
+                                   secureTextEntry={true}
+                                   onChangeText={(password) => {this.setState({password: password})}}
+                                   underlineColorAndroid="transparent"/>
+                        <Text style={styles.loginHeading}>Phone</Text>
+                        <View style={styles.phoneContainer}>
+                            {this._renderCountryPicker()}
+                            {this._renderCallingCode()}
+                            <TextInput
+                                style={styles.loginInput}
+                                value={this.state.phone}
+                                onChangeText={(phone) => {this.setState({phone: phone})}}
+                                underlineColorAndroid={'transparent'}
+                                autoCapitalize={'none'}
+                                autoCorrect={false}
+                                keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}/>
+                        </View>
+                        <TouchableHighlight onPress={() => navigate('VerificationCode')} style={styles.button2} underlayColor='#99d9f4'>
                             <Text style={styles.buttonText}>Sign Up</Text>
-
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.button2} onPress={() => navigate('FriendsPage')} underlayColor='#99d9f4'>
-                            <Text >Next Page</Text>
-
                         </TouchableHighlight>
                     </View>
 
@@ -169,14 +162,26 @@ export default class SettingsScreen extends React.Component {
     }
 }
 
+const flagStyles = StyleSheet.create({
+    itemCountryFlag: {
+        width: 50,
+        height: 50
+    }
+})
+
 const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor: 'white',
     },
-
+    phoneContainer: {
+      flexDirection: 'row',
+      width: '100%',
+      marginLeft: 15,
+      marginRight: 15
+    },
     imgUpload:{
-        backgroundColor: '#9bc4a0',
+        backgroundColor: 'grey',
         height: deviceHeight/5,
         alignItems: 'center',
         justifyContent: 'center',
@@ -189,7 +194,7 @@ const styles = StyleSheet.create({
     },
     button2: {
         height: 50,
-        width: deviceWidth-30,
+        width: '80%',
         backgroundColor: '#48BBEC',
         borderColor: '#48BBEC',
         borderWidth: 1,
@@ -198,6 +203,20 @@ const styles = StyleSheet.create({
         marginTop: 10,
         alignSelf: 'center',
         justifyContent: 'center',
+    },
+    loginHeading: {
+        marginTop: 10,
+        marginLeft: 15,
+        color: 'blue',
+        fontSize: 20
+    },
+    loginInput: {
+        marginLeft: 15,
+        marginRight: 15,
+        color: 'blue',
+        fontSize: 20,
+        borderBottomColor: 'blue',
+        borderBottomWidth: 1,
     },
     uploadButton: {
         width:100,
@@ -208,26 +227,3 @@ const styles = StyleSheet.create({
     }
 
 });
-
-// if you want to customize the country picker
-const countryPickerCustomStyles = {};
-
-// your brand's theme primary color
-const brandColor = '#744BAC';
-
-//
-// const options = {
-//     stylesheet: formStyles,
-//     fields: {
-//         email: {
-//             keyboardType: 'email-address',
-//         },
-//         password: {
-//             password: true,
-//             secureTextEntry: true,
-//         },
-//         phone:{
-//             keyboardType: 'numeric',
-//         }
-//     },
-// };

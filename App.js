@@ -11,7 +11,7 @@ export default class App extends React.Component {
         return (
             <Provider store={createStore}>
                 <View style={styles.container}>
-                    <AppNavigator />
+                    <AppNavigator/>
                 </View>
             </Provider>
 

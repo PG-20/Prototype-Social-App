@@ -6,13 +6,12 @@ import {
     TouchableHighlight,
     View,
     Dimensions,
-    Platform,
+    TextInput,
     Image
 } from 'react-native';
 
 import fblogo from '../assets/images/fblogo.png'
 
-import t from 'tcomb-form-native';
 import {getAllAvailableHashtag, getFriendsList} from "../api";
 import {connect} from "react-redux";
 import { Facebook, Google } from 'expo';
@@ -20,83 +19,6 @@ import glogo from "../assets/images/google.png";
 
 
 let {deviceHeight, deviceWidth }= Dimensions.get('window');
-
-const Form = t.form.Form;
-
-let User = t.struct({
-
-        phone: t.Number,
-password: t.String,
-    });
-
-const formStyles = {
-    ...Form.stylesheet,
-
-    textbox: {
-        normal: {
-            alignSelf: 'center',
-            color: "white",
-            fontSize: 17,
-            height: 36,
-            width: deviceWidth - 30,
-            paddingVertical: Platform.OS === "ios" ? 7 : 0,
-            paddingHorizontal: 7,
-            borderBottomWidth: 1,
-            borderBottomColor: 'white',
-            marginBottom: 5
-        },
-
-        error: {
-            alignSelf: 'center',
-            color: "white",
-            fontSize: 17,
-            height: 36,
-            width: deviceWidth - 30,
-            paddingVertical: Platform.OS === "ios" ? 7 : 0,
-            paddingHorizontal: 7,
-            borderBottomWidth: 1,
-            borderBottomColor: 'red',
-            marginBottom: 5,
-        },
-    },
-
-    controlLabel: {
-        normal: {
-            color: 'white',
-            fontSize: 16,
-            marginBottom: 7,
-            marginTop: 5,
-            fontWeight: "200",
-            paddingHorizontal: 15,
-        },
-
-        error: {
-            color: 'red',
-            fontSize: 16,
-            marginBottom: 7,
-            marginTop: 5,
-            fontWeight: "200",
-            paddingHorizontal: 15,
-        },
-    },
-};
-
-const options = {
-    stylesheet: formStyles,
-    fields: {
-
-        underlineColorAndroid: 'transparent',
-        password: {
-            password: true,
-            secureTextEntry: true,
-            underlineColorAndroid : 'transparent',
-        },
-        phone:{
-            keyboardType: 'numeric',
-            underlineColorAndroid : 'transparent',
-        }
-    },
-};
 
 class HomeScreen extends React.Component {
 
@@ -150,14 +72,7 @@ class HomeScreen extends React.Component {
     }
 
     onLogin() {
-        var value = this.refs.form.getValue();
-        if (value) {
-            this.setState({
-                phone: value.phone,
-                password: value.password,
-            })
-        }
-        console.log(this.state)
+        // do something
     };
 
     render() {
@@ -165,7 +80,18 @@ class HomeScreen extends React.Component {
         return (
             <View style={styles.container}>
                     <Text style={styles.heading}> Go Juice</Text>
-                    <Form ref="form" type={User} options={options}/>
+                    <Text style={styles.loginHeading}>Phone</Text>
+                    <TextInput style={styles.loginInput}
+                           autoCapitalize='none'
+                           autoCorrect={false}
+                           onChangeText={(phone) => {this.setState({phone: phone})}}
+                           underlineColorAndroid="transparent"/>
+                    <Text style={styles.loginHeading}>Password</Text>
+                    <TextInput style={styles.loginInput}
+                           autoCapitalize='none'
+                           autoCorrect={false}
+                           onChangeText={(password) => {this.setState({password: password})}}
+                           underlineColorAndroid="transparent"/>
                     <TouchableOpacity>
                         <Text style={styles.forgot}> Forgot Password? </Text>
                     </TouchableOpacity>
@@ -209,8 +135,22 @@ export default connect(null, mapDispatchToProps)(HomeScreen);
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: 'black',
+      flex: 1,
+      backgroundColor: 'black',
+  },
+  loginHeading: {
+      marginTop: 10,
+      marginLeft: 15,
+      color: 'white',
+      fontSize: 20
+  },
+  loginInput: {
+      marginLeft: 15,
+      marginRight: 15,
+      color: 'white',
+      fontSize: 20,
+      borderBottomColor: 'white',
+      borderBottomWidth: 1,
   },
   heading: {
       textAlign: 'center',
@@ -239,8 +179,10 @@ const styles = StyleSheet.create({
   },
 
   forgot:{
+      marginTop: 10,
       alignSelf: 'flex-end',
       color: 'white',
+      fontSize: 16
   },
 
   text:{
