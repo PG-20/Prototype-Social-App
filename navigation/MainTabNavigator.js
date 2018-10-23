@@ -1,41 +1,34 @@
 import React from 'react';
 import { createStackNavigator } from 'react-navigation';
 
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-import SettingsScreen2 from '../screens/SettingsScreen2';
-import Picker from '../screens/Picker';
+import LoginScreen from '../screens/HomeScreen';
+import SignUp from '../screens/SignUp';
+import FriendsPage from '../screens/FriendsPage';
+import HashtagPage from '../screens/HashtagPage';
 import VerificationCode from '../screens/VerificationCode';
 
 
 const MainNavigator = createStackNavigator({
     Login : {
-        screen : HomeScreen,
+        screen : LoginScreen,
         navigationOptions: {
             title: 'Login or Sign Up'
         }
     },
     SignUp: {
-        screen: SettingsScreen,
+        screen: SignUp,
         navigationOptions: {
             title: 'Sign Up'
         }
     },
-    Verification: {
-        screen: LinksScreen,
-        navigationOptions: {
-            title: 'Verification'
-        }
-    },
     FriendsPage: {
-        screen: SettingsScreen2,
+        screen: FriendsPage,
         navigationOptions: {
             title: 'Friends'
         }
     },
     HashTagsPage: {
-        screen: Picker,
+        screen: HashtagPage,
     },
     VerificationCode: {
         screen: VerificationCode,

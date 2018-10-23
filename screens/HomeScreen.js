@@ -27,6 +27,7 @@ class HomeScreen extends React.Component {
         this.state = {
             phone: "",
             password: "",
+            navigate: this.props.navigation.navigate
         };
 
         this.props.getFriends();
@@ -44,17 +45,24 @@ class HomeScreen extends React.Component {
         });
 
         if (type === 'success') {
-            // Get the user's name using Facebook's Graph API
-            const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
+            // Get the user details using Facebook's Graph API
+            const response = await fetch(`https://graph.facebook.com/me?fields=email,name,id&access_token=${token}`);
+
+            let responseJson = await response.json();
+
+            // print user data from graph API
+            console.log(responseJson);
 
             alert(
                 'Logged in! ' +
-                `Hi ${(await response.json()).name}!`,
+                `Hi ${responseJson.name}!`,
             );
+            this.state.navigate("SignUp");
         }
     }
     async googleLogIn() {
         try {
+
             const result = await Google.logInAsync({
                 androidClientId: "646248863161-g4ethrgs56h9ftbfo6pv8b31m5nj1kmb.apps.googleusercontent.com",
                 iosClientId: "646248863161-tanc3558klnklvpcnksp2p5afr2aar8f.apps.googleusercontent.com",
@@ -62,7 +70,16 @@ class HomeScreen extends React.Component {
             });
 
             if (result.type === 'success') {
-                return result;
+
+                // print user data from google login
+                console.log(result.user);
+
+                alert(
+                    'Logged in! ' +
+                    `Hi ${result.user.name}!`,
+                );
+
+                this.state.navigate("SignUp");
             } else {
                 return {cancelled: true};
             }
@@ -72,11 +89,12 @@ class HomeScreen extends React.Component {
     }
 
     onLogin() {
-        // do something
+
+        // check if getUser call resolves the promise, and then navigate to next page
+
     };
 
     render() {
-        const { navigate } = this.props.navigation;
         return (
             <View style={styles.container}>
                     <Text style={styles.heading}> Go Juice</Text>
@@ -107,7 +125,7 @@ class HomeScreen extends React.Component {
                             <Image source={glogo} style={{height: 100, width: 100}}/>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.bottomSignUp} onPress={() => navigate('SignUp')}>
+                    <TouchableOpacity style={styles.bottomSignUp} onPress={() => this.state.navigate('SignUp')}>
                         <View>
                             <Text style={styles.signUp}>Sign Up Now!</Text>
                         </View>
@@ -182,7 +200,8 @@ const styles = StyleSheet.create({
       marginTop: 10,
       alignSelf: 'flex-end',
       color: 'white',
-      fontSize: 16
+      fontSize: 16,
+      marginRight: 15
   },
 
   text:{

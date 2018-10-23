@@ -1,9 +1,10 @@
-import {SET_ALL_AVAILABLE_HASHTAG, SET_FRIENDS_LIST} from "./actionCreator";
+import {SET_ALL_AVAILABLE_HASHTAG, SET_FRIENDS_LIST, SET_USER_DETAILS} from "./actionCreator";
 
 const initialState = {
     friendsList: {},
-    allAvailableHashtag: {}
-}
+    allAvailableHashtag: {},
+    userDetails: {}
+};
 
 export default function rootReducer(state = initialState, action) {
     switch(action.type) {
@@ -16,6 +17,11 @@ export default function rootReducer(state = initialState, action) {
             return {
                 ...state,
                 allAvailableHashtag: action.payload
+            };
+        case SET_USER_DETAILS:
+            return {
+                ...state,
+                userDetails: action.payload
             };
         default :
             return {

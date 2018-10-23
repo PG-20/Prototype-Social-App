@@ -10,26 +10,9 @@ import {
 import qr from '../assets/images/qrsearch.png'
 import {connect} from "react-redux";
 import {List,ListItem} from 'react-native-elements';
-import CountryPicker from "react-native-country-picker-modal";
 
 
-class LogoTitle extends React.Component {
-
-    render() {
-        const {navigate} = this.props.navigation;
-        return (
-            <TouchableOpacity onPress={() => navigate('HashTagsPage')}>
-                <Image
-                    source={qr}
-                    style={{ width: 30, height: 30, margin: 15, tintColor: 'blue', }}
-                />
-            </TouchableOpacity>
-        );
-    }
-}
-
-
-class SettingsScreen2 extends React.Component {
+class FriendsPage extends React.Component {
     constructor(props){
         super(props);
         this.state={
@@ -44,24 +27,16 @@ class SettingsScreen2 extends React.Component {
                 <TouchableOpacity onPress={() => navigation.navigate('HashTagsPage')}>
                     <Image
                         source={qr}
-                        style={{width: 35, height: 35, margin: 15, tintColor: 'blue',}}
+                        style={{width: 35, height: 35, margin: 15, tintColor: '#005BEC',}}
                     />
                 </TouchableOpacity>
             )
         }
     };
 
-
-
     friendsClicked(){
         this.setState({friendsTabClicked: true})
     }
-
-    _changeCountry = (country) => {
-        this.setState({ country });
-        this.refs.form.refs.textInput.focus();
-    };
-
 
     renderSeparator() {
         return (
@@ -137,7 +112,7 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, null)(SettingsScreen2);
+export default connect(mapStateToProps, null)(FriendsPage);
 
 const styles = StyleSheet.create({
     container:{

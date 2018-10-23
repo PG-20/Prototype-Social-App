@@ -41,7 +41,6 @@ export default class GoogleLoginButton extends Component {
     }
 
     handleLogin(e, data) {
-        console.log("handle");
         const result = e || data;
         if (result.eventName === "onLogin") {
             this.setState({status:true});

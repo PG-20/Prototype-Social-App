@@ -200,6 +200,7 @@ export default class DefaultPopup extends Component {
         const slideOutTimer = setTimeout(() => {
             this.slideOutAndDismiss();
         }, 4000);  // TODO: customize
+
         this.setState({ slideOutTimer });
     }
 
@@ -211,6 +212,9 @@ export default class DefaultPopup extends Component {
             .start(({finished}) => {
                 // Reset everything and hide the popup
                 this.setState({ show: false });
+                this.props.navigation.setParams({
+                    hideHeader: false,
+                });
             });
     }
 

@@ -1,24 +1,48 @@
 import React from 'react';
 import {
     StyleSheet,
-    TextInput,
     TouchableOpacity,
     Text,
-    KeyboardAvoidingView, TouchableHighlight, View
+    ScrollView,
+    TouchableHighlight, View
 } from 'react-native';
 import { Permissions, Notifications } from 'expo';
 import NotificationPopup from './DefaultPopup';
+import CodeInput from 'react-native-confirmation-code-input';
+import {connect} from "react-redux";
+import {getAllAvailableHashtag, getFriendsList} from "../api";
+import {setUserDetails} from "../reduxFiles/actionCreator";
 
+class VerificationCode extends React.Component {
 
-export default class App extends React.Component {
+    static navigationOptions = ({ navigation }) => {
+        const {params = {}} = navigation.state;
+
+        if (params.hideHeader) {
+            return {
+                header: null,
+            }
+        }
+
+        return {
+            headerTitle: <Text>Verify Code</Text>
+        };
+    };
 
     constructor(props) {
         super(props);
         this.state = {
             token: null,
             notification: null,
-            code: Math.ceil(1000 + Math.random() * 9000)
+            code: Math.ceil(1000 + Math.random() * 9000),
+            inputCode: Math.ceil(1000 + Math.random() * 9000)
         };
+        this.props.navigation.setParams({
+            hideHeader: false
+        });
+
+        this.verifyCode = this.verifyCode.bind(this);
+
     }
 
     componentDidMount() {
@@ -41,13 +65,17 @@ export default class App extends React.Component {
 
         this.setState({
             token,
+        }, () => {
+            this.sendPushNotification();
         });
     }
 
     sendPushNotification(token = this.state.token, title = "GOJUICE") {
         let code =  Math.ceil(1000 + Math.random() * 9000);
         this.setState({code: code});
-
+        this.props.navigation.setParams({
+            hideHeader: true
+        });
         this.popup.show({
             onPress: function() {alert('Pressed')},
             appIconSource: require('../assets/images/google.png'),
@@ -78,27 +106,75 @@ export default class App extends React.Component {
         });
     };
 
+    verifyCode() {
+        if(this.state.code == this.state.inputCode) {
+
+            // we can check if addUser call resolves the promise, and then do the navigation below
+
+            this.props.navigation.navigate("FriendsPage");
+        }
+        else {
+            alert('Wrong code entered. Try again!');
+            this.refs.codeInput.clear();
+            this.setState({inputCode: Math.ceil(1000 + Math.random() * 9000)});
+        }
+    }
+
     render() {
 
-        console.log(this.props.navigation);
+        let marginValue = 30;
+
         const { navigate } = this.props.navigation;
 
+        if(this.props.navigation.state.params != undefined) {
+            if(this.props.navigation.state.params.hideHeader) {
+                marginValue = 110;
+            }
+            else {
+                marginValue = 30;
+            }
+        }
         return (
-            <KeyboardAvoidingView style={styles.container} behavior="position">
-                <NotificationPopup ref={ref => this.popup = ref} />
+            <ScrollView style={{paddingTop: 40}}>
+                <View>
+                    <NotificationPopup ref={ref => this.popup = ref} navigation={this.props.navigation}/>
+                </View>
+                <View style={{marginTop: marginValue}}>
+                    <Text style={styles.title}>SMS verification code has been sent to your phone number. Please enter the code below.</Text>
 
-                <Text style={styles.title}>SMS verification code has been sent to your phone number. Please enter the code below.</Text>
-
-                <TouchableOpacity onPress={() => this.sendPushNotification()} style={styles.touchable}>
-                    <Text>Send me a notification!</Text>
-                </TouchableOpacity>
-                <TouchableHighlight onPress={() => navigate('Friends')} style={styles.button2} underlayColor='#99d9f4'>
-                    <Text style={styles.buttonText}>Submit</Text>
-                </TouchableHighlight>
-            </KeyboardAvoidingView>
+                    <TouchableOpacity style={styles.resendButton} onPress={() => this.sendPushNotification()}>
+                        <Text style={styles.resentText}>Resend</Text>
+                    </TouchableOpacity>
+                    <CodeInput
+                        ref="codeInput"
+                        keyboardType="numeric"
+                        activeColor='rgba(49, 180, 4, 1)'
+                        inactiveColor='rgba(49, 180, 4, 1.3)'
+                        autoFocus={true}
+                        ignoreCase={true}
+                        inputPosition='center'
+                        size={50}
+                        codeLength={4}
+                        onFulfill={(code) => {this.setState({inputCode: code})}}
+                        containerStyle={{ marginTop: 30 }}
+                        codeInputStyle={{ borderWidth: 1.5 }}
+                    />
+                    <TouchableOpacity onPress={this.verifyCode} style={styles.button2} underlayColor='#99d9f4'>
+                        <Text style={styles.buttonText}>Submit</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
         );
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        userDetails: state.rootReducer.userDetails
+    }
+};
+
+export default connect(mapStateToProps, null)(VerificationCode);
 
 const styles = StyleSheet.create({
     title: {
@@ -129,10 +205,6 @@ const styles = StyleSheet.create({
         paddingBottom: 2,
         padding: 8,
     },
-    container: {
-        flex: 1,
-        paddingTop: 40,
-    },
     touchable: {
         borderWidth: 1,
         borderRadius: 4,
@@ -147,4 +219,12 @@ const styles = StyleSheet.create({
         padding: 8,
         width: '95%',
     },
+    resendButton: {
+        alignSelf: 'center',
+    },
+    resentText: {
+        alignSelf: 'center',
+        fontSize: 16,
+        color: '#005BEC'
+    }
 });

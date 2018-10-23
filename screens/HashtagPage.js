@@ -12,13 +12,11 @@ import {SearchBar} from 'react-native-elements'
 
 import {connect} from "react-redux";
 import {LinearGradient} from 'expo'
-import NotificationPopup from 'react-native-push-notification-popup';
 
 let deviceWidth = Dimensions.get('window').width;
-let deviceHeight = Dimensions.get('window').height;
 
 
-class Picker extends React.Component {
+class HashtagPage extends React.Component {
     static navigationOptions = {
         headerTitle: <SearchBar containerStyle={{width: '100%', backgroundColor: '#eaf2f1', alignItems: 'center'}}
                                 inputStyle={{color: 'black',width: '95%', backgroundColor: 'white'}}
@@ -32,16 +30,6 @@ class Picker extends React.Component {
             phone: '',
             code: ''
         };
-    }
-
-    componentDidMount() {
-        this.popup.show({
-            onPress: function() {console.log('Pressed')},
-            appTitle: 'Some App',
-            timeText: 'Now',
-            title: 'Hello World',
-            body: 'This is a sample message.\nTesting emoji 😀',
-        });
     }
 
     flatlistItem(item){
@@ -119,10 +107,10 @@ class Picker extends React.Component {
                                               ?'white'
                                               :col[this.state.list.indexOf(true)]}]}>Item</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity>
-                    </TouchableOpacity>
-                    <NotificationPopup ref={ref => this.popup = ref} />
                 </View>
+                <TouchableOpacity style={styles.button}>
+                    <Text>Search</Text>
+                </TouchableOpacity>
                 {this.renderFlatlist()}
             </View>
         )
@@ -135,7 +123,7 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, null)(Picker);
+export default connect(mapStateToProps, null)(HashtagPage);
 
 
 const styles = StyleSheet.create({
@@ -201,7 +189,18 @@ const styles = StyleSheet.create({
     pickerText:{
         textAlign: 'center',
         fontSize: 18,
+    },
+    button: {
+        height: 50,
+        width: '80%',
+        backgroundColor: '#48BBEC',
+        borderColor: '#48BBEC',
+        borderWidth: 1,
+        borderRadius: 8,
+        marginBottom: 10,
+        marginTop: 10,
+        alignSelf: 'center',
+        justifyContent: 'center',
     }
-
 
 });

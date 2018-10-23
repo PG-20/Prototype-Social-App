@@ -14,13 +14,13 @@ import {
 } from 'react-native';
 import {ImagePicker, Permissions} from 'expo';
 
-import Form from 'react-native-form';
 import CountryPicker from "react-native-country-picker-modal";
+import {setUserDetails} from "../reduxFiles/actionCreator";
+import {connect} from "react-redux";
 
-let deviceWidth = Dimensions.get('window').width;
 let deviceHeight = Dimensions.get('window').height;
 
-export default class SettingsScreen extends React.Component {
+class SignUp extends React.Component {
 
     constructor(props){
         super(props);
@@ -37,6 +37,7 @@ export default class SettingsScreen extends React.Component {
             }
         };
         this.pickImage=this.pickImage.bind(this);
+        this.onSignUp = this.onSignUp.bind(this);
     };
 
     _changeCountry = (country) => {
@@ -62,7 +63,7 @@ export default class SettingsScreen extends React.Component {
 
         return (
             <View style={{marginTop: 5}}>
-                <Text>+{this.state.country.callingCode}</Text>
+                <Text style={{fontSize: 16}}>+{this.state.country.callingCode}</Text>
             </View>
         );
 
@@ -87,30 +88,40 @@ export default class SettingsScreen extends React.Component {
         }
     };
 
+    onSignUp() {
+
+        let userDetails = {
+            username: this.state.username,
+            phone: this.state.phone,
+            fcm_token: this.state.fcm_token,
+            apns_token: this.state.apns_token,
+            password: this.state.password,
+            email: this.state.email,
+            // fb_user_id can be received from previous page
+            fb_user_id: this.state.fb_user_id,
+            //google_user_id can be received from previous page
+            google_user_id: this.state.google_user_id,
+            profile_pic_url: this.state.image,
+            type: this.state.type,
+            status_phone: this.state.status_phone
+        };
+
+        this.props.updateUserDetails(userDetails);
+        this.props.navigation.navigate('VerificationCode')
+    }
+
     render() {
-        const {navigate} = this.props.navigation;
-
-        let image = this.state.image;
-
-        let textStyle = this.state.enterCode ? {
-            height: 50,
-            textAlign: 'center',
-            fontSize: 40,
-            fontWeight: 'bold',
-            fontFamily: 'Courier'
-        } : {};
-
         return(
             <View style={styles.container}>
                 <ScrollView>
-                    <ImageBackground source={{uri: image}}
+                    <ImageBackground source={{uri: this.state.image}}
                                      reSizeMode= 'stretch'
                                      blurRadius={5}
                                      style={styles.imgUpload}>
                         <TouchableOpacity onPress={this.pickImage}>
                             <View style={styles.uploadButton}>
                                 {!this.state.received && <Image source={require ('../assets/images/UploadIMG.png')} style={{width:100, height: 100, borderRadius: 50}}/>}
-                                {this.state.received && <Image source={{ uri: image }} style={{ width: 100, height: 100 , borderRadius: 50}} />}
+                                {this.state.received && <Image source={{ uri: this.state.image }} style={{ width: 100, height: 100 , borderRadius: 50}} />}
                             </View>
                         </TouchableOpacity>
                     </ImageBackground>
@@ -143,15 +154,15 @@ export default class SettingsScreen extends React.Component {
                             {this._renderCountryPicker()}
                             {this._renderCallingCode()}
                             <TextInput
-                                style={styles.loginInput}
                                 value={this.state.phone}
+                                style={[styles.loginInput, {width: '73%'}]}
                                 onChangeText={(phone) => {this.setState({phone: phone})}}
                                 underlineColorAndroid={'transparent'}
                                 autoCapitalize={'none'}
                                 autoCorrect={false}
                                 keyboardType={Platform.OS === 'ios' ? 'number-pad' : 'numeric'}/>
                         </View>
-                        <TouchableHighlight onPress={() => navigate('VerificationCode')} style={styles.button2} underlayColor='#99d9f4'>
+                        <TouchableHighlight onPress={this.onSignUp} style={styles.button2} underlayColor='#99d9f4'>
                             <Text style={styles.buttonText}>Sign Up</Text>
                         </TouchableHighlight>
                     </View>
@@ -162,12 +173,24 @@ export default class SettingsScreen extends React.Component {
     }
 }
 
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateUserDetails: (data) => {
+            dispatch(setUserDetails(data));
+            return Promise.resolve();
+        }
+    }
+};
+
+export default connect(null, mapDispatchToProps)(SignUp);
+
+
 const flagStyles = StyleSheet.create({
     itemCountryFlag: {
         width: 50,
         height: 50
     }
-})
+});
 
 const styles = StyleSheet.create({
     container:{
@@ -200,23 +223,23 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 8,
         marginBottom: 10,
-        marginTop: 10,
+        marginTop: 50,
         alignSelf: 'center',
         justifyContent: 'center',
     },
     loginHeading: {
         marginTop: 10,
         marginLeft: 15,
-        color: 'blue',
+        color: '#005BEC',
         fontSize: 20
     },
     loginInput: {
         marginLeft: 15,
         marginRight: 15,
-        color: 'blue',
+        color: '#005BEC',
         fontSize: 20,
-        borderBottomColor: 'blue',
-        borderBottomWidth: 1,
+        borderBottomColor: '#005BEC',
+        borderBottomWidth: 1
     },
     uploadButton: {
         width:100,

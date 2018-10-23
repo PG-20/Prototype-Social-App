@@ -46,46 +46,37 @@ export function getAllAvailableHashtag() {
     }
 }
 
-export function signUpUser(
-        username = "Hannah",
-        phone = "",
-        fcm_token = "000",
-        apns_token = "0000",
-        password = "111",
-        email = "B@mail.com",
-        fb_user_id = "yyy",
-        google_user_id = "xxx",
-        profile_pic_url = "http://128.199.183.12/x_profile_photos/User_main_6.jpg",
-        type = 1,
-        status_phone = "") {
-    fetch('https://fishermen.tech/X/requestHandling.php', {
-        method: 'POST',
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            "request": "addUser",
-            "input" : {
-                "username" : username,
-                "phone" : phone,
-                "fcm_token" : fcm_token,
-                "apns_token": apns_token,
-                "password" : password,
-                "email" : email,
-                "fb_user_id" : fb_user_id,
-                "google_user_id" : google_user_id,
-                "profile_pic_url" : profile_pic_url,
-                "type" : type,
-                "status_phone" : status_phone
 
-            }
-        }),
-    }).then((response) => response.json())
-        .then((responseJson) => {
-            dispatch(setFriendsList(responseJson))
-        })
-        .catch((error) => {
-            console.error(error);
-        });
-}
+
+// export function signUpUser(obj) {
+//     fetch('https://fishermen.tech/X/requestHandling.php', {
+//         method: 'POST',
+//         headers: {
+//             Accept: 'application/json',
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//             "request": "addUser",
+//             "input" : {
+//                 "username" : obj.username,
+//                 "phone" : obj.phone,
+//                 "fcm_token" : obj.fcm_token,
+//                 "apns_token": obj.apns_token,
+//                 "password" : obj.password,
+//                 "email" : obj.email,
+//                 "fb_user_id" : obj.fb_user_id,
+//                 "google_user_id" : obj.google_user_id,
+//                 "profile_pic_url" : obj.profile_pic_url,
+//                 "type" : obj.type,
+//                 "status_phone" : obj.status_phone
+//
+//             }
+//         }),
+//     }).then((response) => response.json())
+//         .then((responseJson) => {
+//             dispatch(setFriendsList(responseJson))
+//         })
+//         .catch((error) => {
+//             console.error(error);
+//         });
+// }
