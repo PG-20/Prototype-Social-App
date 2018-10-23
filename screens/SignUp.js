@@ -13,7 +13,7 @@ import {
     View
 } from 'react-native';
 import {ImagePicker, Permissions} from 'expo';
-
+import Modal from 'react-native-modal'
 import CountryPicker from "react-native-country-picker-modal";
 import {setUserDetails} from "../reduxFiles/actionCreator";
 import {connect} from "react-redux";
@@ -25,12 +25,14 @@ class SignUp extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            image : "",
+            image : null,
             received: false,
             email: "",
+            camera: false,
             phone: "",
             password: "",
             username: "",
+            modalVisible: false,
             country: {
                 cca2: 'US',
                 callingCode: '1'
@@ -38,12 +40,17 @@ class SignUp extends React.Component {
         };
         this.pickImage=this.pickImage.bind(this);
         this.onSignUp = this.onSignUp.bind(this);
+        this.imageModal=this.imageModal.bind(this)
     };
 
     _changeCountry = (country) => {
         this.setState({ country, phone: "" });
     };
 
+    componentWillUnmount() {
+        console.log('hi');
+        this.setState({modalVisible: false})
+    }
 
     _renderCountryPicker = () => {
 
@@ -62,31 +69,74 @@ class SignUp extends React.Component {
     _renderCallingCode = () => {
 
         return (
-            <View style={{marginTop: 5}}>
-                <Text style={{fontSize: 16}}>+{this.state.country.callingCode}</Text>
+            <View>
+                <Text style={{fontSize: 20}}>+{this.state.country.callingCode}</Text>
             </View>
         );
 
     };
 
     pickImage = async() => {
-
-        const res = await Promise.all([
+        Promise.all([
             Permissions.askAsync(Permissions.CAMERA),
             Permissions.askAsync(Permissions.CAMERA_ROLL)
-        ]);
+        ]).then(async () => {
+            let result = this.state.camera
+                ? await ImagePicker.launchCameraAsync({mediaTypes: 'Images',})
+                : await ImagePicker.launchImageLibraryAsync({mediaTypes: 'Images',});
 
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: 'Images',
+            if (!result.cancelled) {
+                this.setState({ image: result.uri, received: true });
+            }
+            else {
+                console.log("cancelled");
+            }
+        }).catch((err) => {
+            console.log(err);
         });
-
-        if (!result.cancelled) {
-            this.setState({ image: result.uri, received: true });
-        }
-        else {
-            console.log("Camera permission denied")
-        }
     };
+
+    imageModal() {
+        return(
+            <Modal isVisible={this.state.modalVisible}
+                   onBackButtonPress={() => {this.setState({modalVisible: false})}}
+                   onBackdropPress={() => {this.setState({modalVisible: false})}}
+                   backdropOpacity={.7}>
+                <View style={{
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(255,255,255,1)',
+                    borderRadius: 8,
+                    height: 170,
+                    overflow: 'hidden',
+                    }}>
+                        <TouchableOpacity onPress={() => this.setState({camera: true,modalVisible: false},
+                            () => {this.pickImage()})}
+                                          style={{marginTop: 20}}
+                        >
+                            <Text style={{fontSize: 25}}>Take from Camera</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.setState({camera: false, modalVisible: false},
+                            () => {this.pickImage()})}
+                                          style={{margin: 15}}
+                        >
+                            <Text style={{fontSize: 25}}>Take from Library</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.setState({modalVisible: false})}
+                                            style={{width: '100%',
+                                                    alignItems: 'center',
+                                                    borderTopWidth: 1,
+                                                    height: 40,
+                                                    bottom: 0,
+                                                    position: 'absolute',
+                                                    backgroundColor: 'rgba(0,0,0,.8)',
+
+                                            }}>
+                            <Text style={{fontSize: 25, color: 'white'}}>Cancel</Text>
+                        </TouchableOpacity>
+                </View>
+            </Modal>
+        )
+    }
 
     onSignUp() {
 
@@ -118,14 +168,16 @@ class SignUp extends React.Component {
                                      reSizeMode= 'stretch'
                                      blurRadius={5}
                                      style={styles.imgUpload}>
-                        <TouchableOpacity onPress={this.pickImage}>
+                        <TouchableOpacity onPress={() => this.setState({modalVisible: true})}>
                             <View style={styles.uploadButton}>
-                                {!this.state.received && <Image source={require ('../assets/images/UploadIMG.png')} style={{width:100, height: 100, borderRadius: 50}}/>}
-                                {this.state.received && <Image source={{ uri: this.state.image }} style={{ width: 100, height: 100 , borderRadius: 50}} />}
+                                {!this.state.received && <Image source={require ('../assets/images/UploadIMG.png')}
+                                                                style={{width:100, height: 100, borderRadius: 50}}/>}
+                                {this.state.received && <Image source={{ uri: this.state.image }}
+                                                               style={{ width: 100, height: 100 , borderRadius: 50}} />}
                             </View>
                         </TouchableOpacity>
                     </ImageBackground>
-
+                    {this.imageModal()}
                     <View>
                         <Text style={styles.loginHeading}>Username</Text>
                         <TextInput style={styles.loginInput}
@@ -197,6 +249,11 @@ const styles = StyleSheet.create({
         flex:1,
         backgroundColor: 'white',
     },
+    modalStyle:{
+        borderRadius: 8,
+        zIndex: 1
+    },
+
     phoneContainer: {
       flexDirection: 'row',
       width: '100%',

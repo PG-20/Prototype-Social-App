@@ -4,7 +4,6 @@ import {
     Text,
     TouchableOpacity,
     ImageBackground,
-    Image,
     View,
     FlatList, Dimensions,
 } from 'react-native';
@@ -18,8 +17,8 @@ let deviceWidth = Dimensions.get('window').width;
 
 class HashtagPage extends React.Component {
     static navigationOptions = {
-        headerTitle: <SearchBar containerStyle={{width: '100%', backgroundColor: '#eaf2f1', alignItems: 'center'}}
-                                inputStyle={{color: 'black',width: '95%', backgroundColor: 'white'}}
+        headerTitle: <SearchBar containerStyle={{width: '100%', backgroundColor: 'white', alignItems: 'center', borderBottomColor: 'transparent'}}
+                                inputStyle={{color: 'black',width: '95%', backgroundColor: 'rgba(0,0,0,0.1)'}}
                                 />
     };
 
@@ -56,12 +55,14 @@ class HashtagPage extends React.Component {
         a.push([]);
         let f_data=(a)[3-(this.state.list.indexOf(true))];
         return(
-            <FlatList
-                data={f_data}
-                renderItem={({item}) => this.flatlistItem(item)}
-                keyExtractor={(item) => item.hashtag_id}
-                horizontal={true}
-            />
+            <View style={{height: 200}}>
+                <FlatList
+                    data={f_data}
+                    renderItem={({item}) => this.flatlistItem(item)}
+                    keyExtractor={(item) => item.hashtag_id}
+                    horizontal={true}
+                />
+            </View>
         )
     }
 
@@ -108,10 +109,12 @@ class HashtagPage extends React.Component {
                                               :col[this.state.list.indexOf(true)]}]}>Item</Text>
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.button}>
-                    <Text>Search</Text>
-                </TouchableOpacity>
+
                 {this.renderFlatlist()}
+
+                <TouchableOpacity style={styles.button}>
+                    <Text style={styles.searchText}>Search</Text>
+                </TouchableOpacity>
             </View>
         )
     }
@@ -138,6 +141,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '95%',
         marginTop: 50,
+        marginBottom: 20,
         height: 35,
         borderColor: 'black',
     },
@@ -188,7 +192,7 @@ const styles = StyleSheet.create({
 
     pickerText:{
         textAlign: 'center',
-        fontSize: 18,
+        fontSize: 15,
     },
     button: {
         height: 50,
@@ -201,6 +205,11 @@ const styles = StyleSheet.create({
         marginTop: 10,
         alignSelf: 'center',
         justifyContent: 'center',
+        alignContent: 'center'
+    },
+    searchText:{
+        alignSelf: 'center',
+        color: 'white',
     }
 
 });

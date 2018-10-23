@@ -4,14 +4,14 @@ import {
     TouchableOpacity,
     Text,
     ScrollView,
-    TouchableHighlight, View
+    View,
+    AsyncStorage,
 } from 'react-native';
 import { Permissions, Notifications } from 'expo';
 import NotificationPopup from './DefaultPopup';
 import CodeInput from 'react-native-confirmation-code-input';
 import {connect} from "react-redux";
-import {getAllAvailableHashtag, getFriendsList} from "../api";
-import {setUserDetails} from "../reduxFiles/actionCreator";
+
 
 class VerificationCode extends React.Component {
 
@@ -106,25 +106,23 @@ class VerificationCode extends React.Component {
         });
     };
 
-    verifyCode() {
+    verifyCode = async () => {
         if(this.state.code == this.state.inputCode) {
 
             // we can check if addUser call resolves the promise, and then do the navigation below
-
-            this.props.navigation.navigate("FriendsPage");
+            await AsyncStorage.setItem('userToken', 'abc');
+            this.props.navigation.navigate('Main');
         }
         else {
             alert('Wrong code entered. Try again!');
             this.refs.codeInput.clear();
             this.setState({inputCode: Math.ceil(1000 + Math.random() * 9000)});
         }
-    }
+    };
 
     render() {
 
         let marginValue = 30;
-
-        const { navigate } = this.props.navigation;
 
         if(this.props.navigation.state.params != undefined) {
             if(this.props.navigation.state.params.hideHeader) {

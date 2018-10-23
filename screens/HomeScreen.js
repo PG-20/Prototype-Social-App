@@ -5,7 +5,6 @@ import {
     TouchableOpacity,
     TouchableHighlight,
     View,
-    Dimensions,
     TextInput,
     Image
 } from 'react-native';
@@ -16,9 +15,6 @@ import {getAllAvailableHashtag, getFriendsList} from "../api";
 import {connect} from "react-redux";
 import { Facebook, Google } from 'expo';
 import glogo from "../assets/images/google.png";
-
-
-let {deviceHeight, deviceWidth }= Dimensions.get('window');
 
 class HomeScreen extends React.Component {
 
@@ -103,13 +99,17 @@ class HomeScreen extends React.Component {
                            autoCapitalize='none'
                            autoCorrect={false}
                            onChangeText={(phone) => {this.setState({phone: phone})}}
-                           underlineColorAndroid="transparent"/>
+                           underlineColorAndroid="transparent"
+                           keyboardType="numeric"
+                    />
                     <Text style={styles.loginHeading}>Password</Text>
                     <TextInput style={styles.loginInput}
                            autoCapitalize='none'
                            autoCorrect={false}
                            onChangeText={(password) => {this.setState({password: password})}}
-                           underlineColorAndroid="transparent"/>
+                           underlineColorAndroid="transparent"
+                           secureTextEntry={true}
+                    />
                     <TouchableOpacity>
                         <Text style={styles.forgot}> Forgot Password? </Text>
                     </TouchableOpacity>
@@ -160,13 +160,15 @@ const styles = StyleSheet.create({
       marginTop: 10,
       marginLeft: 15,
       color: 'white',
-      fontSize: 20
+      fontSize: 25
   },
   loginInput: {
       marginLeft: 15,
       marginRight: 15,
+      marginTop: 10,
+      marginBottom: 5,
       color: 'white',
-      fontSize: 20,
+      fontSize: 25,
       borderBottomColor: 'white',
       borderBottomWidth: 1,
   },
@@ -182,18 +184,20 @@ const styles = StyleSheet.create({
       fontSize: 30,
   },
   bottomSignUp:{
-      backgroundColor: 'rgba(255,255,255,0.2)',
-      height: 45,
-      width: "90%",
+      backgroundColor: 'rgb(255,255,255)',
+      height: 60,
       marginTop: 20,
       alignSelf: 'center',
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 5,
+      width: '100%',
+      position: 'absolute',
+      bottom: 0,
   },
   signUp:{
-      color: 'white',
+      color: 'black',
       textAlign: 'center',
+      fontSize: 22,
   },
 
   forgot:{
@@ -205,11 +209,11 @@ const styles = StyleSheet.create({
   },
 
   text:{
-      marginTop: 10,
+      marginTop: 50,
       fontSize: 20,
   },
   signupthirdparty:{
-      marginTop: 10,
+      marginTop: 20,
       flexDirection: 'row',
       alignSelf: "center",
       justifyContent: 'center',

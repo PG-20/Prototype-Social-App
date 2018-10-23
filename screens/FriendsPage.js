@@ -6,6 +6,7 @@ import {
     Image,
     View,
     FlatList,
+    AsyncStorage,
 } from 'react-native';
 import qr from '../assets/images/qrsearch.png'
 import {connect} from "react-redux";
@@ -78,6 +79,11 @@ class FriendsPage extends React.Component {
         }
     }
 
+    signout = async () => {
+        await AsyncStorage.clear();
+        this.props.navigation.navigate('Auth');
+    };
+
     render() {
         return(
             <View style={styles.container}>
@@ -101,6 +107,10 @@ class FriendsPage extends React.Component {
                     </TouchableOpacity>
                 </View>
                 {this.renderFlatlist()}
+                <TouchableOpacity onPress={this.signout} style={styles.button2} underlayColor='#99d9f4'>
+                    <Text style={styles.buttonText}>Logout</Text>
+                </TouchableOpacity>
+
             </View>
         )
     }
@@ -147,5 +157,24 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 21,
         fontWeight: '300',
-    }
+    },
+    button2: {
+        height: 50,
+        width: '80%',
+        backgroundColor: '#48BBEC',
+        borderColor: '#48BBEC',
+        borderWidth: 1,
+        borderRadius: 8,
+        marginBottom: 10,
+        bottom: 30,
+        position: 'absolute',
+        alignSelf: 'center',
+        justifyContent: 'center',
+    },
+    buttonText: {
+        fontSize: 16,
+        color: 'white',
+        alignSelf: 'center',
+    },
+
 });
