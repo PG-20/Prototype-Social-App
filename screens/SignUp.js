@@ -202,12 +202,12 @@ class SignUp extends React.Component {
                                    onChangeText={(password) => {this.setState({password: password})}}
                                    underlineColorAndroid="transparent"/>
                         <Text style={styles.loginHeading}>Phone</Text>
-                        <View style={styles.phoneContainer}>
+                        <View style={[styles.phoneContainer, styles.loginInput]}>
                             {this._renderCountryPicker()}
                             {this._renderCallingCode()}
                             <TextInput
+                                style={{marginLeft: 10, width: '100%', fontSize: 20}}
                                 value={this.state.phone}
-                                style={[styles.loginInput, {width: '73%'}]}
                                 onChangeText={(phone) => {this.setState({phone: phone})}}
                                 underlineColorAndroid={'transparent'}
                                 autoCapitalize={'none'}
@@ -256,9 +256,8 @@ const styles = StyleSheet.create({
 
     phoneContainer: {
       flexDirection: 'row',
-      width: '100%',
-      marginLeft: 15,
-      marginRight: 15
+      borderBottomColor: '#005BEC',
+      borderBottomWidth: 1
     },
     imgUpload:{
         backgroundColor: 'grey',

@@ -6,7 +6,7 @@ import {
     TouchableHighlight,
     View,
     TextInput,
-    Image
+    Image, ScrollView
 } from 'react-native';
 
 import fblogo from '../assets/images/fblogo.png'
@@ -93,22 +93,23 @@ class HomeScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
+                <ScrollView>
                     <Text style={styles.heading}> Go Juice</Text>
                     <Text style={styles.loginHeading}>Phone</Text>
                     <TextInput style={styles.loginInput}
-                           autoCapitalize='none'
-                           autoCorrect={false}
-                           onChangeText={(phone) => {this.setState({phone: phone})}}
-                           underlineColorAndroid="transparent"
-                           keyboardType="numeric"
+                               autoCapitalize='none'
+                               autoCorrect={false}
+                               onChangeText={(phone) => {this.setState({phone: phone})}}
+                               underlineColorAndroid="transparent"
+                               keyboardType="numeric"
                     />
                     <Text style={styles.loginHeading}>Password</Text>
                     <TextInput style={styles.loginInput}
-                           autoCapitalize='none'
-                           autoCorrect={false}
-                           onChangeText={(password) => {this.setState({password: password})}}
-                           underlineColorAndroid="transparent"
-                           secureTextEntry={true}
+                               autoCapitalize='none'
+                               autoCorrect={false}
+                               onChangeText={(password) => {this.setState({password: password})}}
+                               underlineColorAndroid="transparent"
+                               secureTextEntry={true}
                     />
                     <TouchableOpacity>
                         <Text style={styles.forgot}> Forgot Password? </Text>
@@ -117,7 +118,7 @@ class HomeScreen extends React.Component {
                         <Text style={styles.logIn} onPress={this.onLogin}> Login </Text>
                     </TouchableHighlight>
                     <Text style={[styles.logIn, styles.text]}>Or Sign up with</Text>
-                    <View style={styles.signupthirdparty}>
+                    <View style={[styles.signupthirdparty]}>
                         <TouchableOpacity onPress={this.facebookLogIn} style={{margin: 5}}>
                             <Image source={fblogo} style={{height: 100, width: 100}}/>
                         </TouchableOpacity>
@@ -125,11 +126,10 @@ class HomeScreen extends React.Component {
                             <Image source={glogo} style={{height: 100, width: 100}}/>
                         </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.bottomSignUp} onPress={() => this.state.navigate('SignUp')}>
-                        <View>
-                            <Text style={styles.signUp}>Sign Up Now!</Text>
-                        </View>
-                    </TouchableOpacity>
+                </ScrollView>
+                <TouchableOpacity style={styles.bottomSignUp} onPress={() => this.state.navigate('SignUp')}>
+                        <Text style={styles.signUp}>Sign Up Now!</Text>
+                </TouchableOpacity>
             </View>
         );
     }
@@ -213,6 +213,7 @@ const styles = StyleSheet.create({
       fontSize: 20,
   },
   signupthirdparty:{
+      marginBottom: 100,
       marginTop: 20,
       flexDirection: 'row',
       alignSelf: "center",
