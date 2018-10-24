@@ -26,6 +26,7 @@
     },
     "android": {
       "package": "host.exp.exponent",
+      "googleServicesFile": "./google-services.json",
       "config" : {
         "googleSignIn": {
           "apiKey" : "AIzaSyAPdZ3-v7t07gPrH7lAt45o0dL75j84VRk",
