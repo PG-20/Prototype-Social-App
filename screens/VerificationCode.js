@@ -34,6 +34,7 @@ class VerificationCode extends React.Component {
         this.state = {
             token: null,
             notification: null,
+            first: true,
             code: Math.ceil(1000 + Math.random() * 9000),
             inputCode: Math.ceil(1000 + Math.random() * 9000)
         };
@@ -53,9 +54,7 @@ class VerificationCode extends React.Component {
         Promise.all([Permissions.askAsync(Permissions.NOTIFICATIONS)])
             .then(async () => {
                 const token = await Notifications.getExpoPushTokenAsync();
-
                 Notifications.addListener(this.handleNotification);
-                this.sendPushNotification(token);
                 this.setState({token: token});
             })
             .catch((err) => {
@@ -66,7 +65,7 @@ class VerificationCode extends React.Component {
 
     sendPushNotification(token = this.state.token, title = "GOJUICE") {
         let code =  Math.ceil(1000 + Math.random() * 9000);
-        this.setState({code: code});
+        this.setState({code: code, first: false});
         this.props.navigation.setParams({
             hideHeader: true
         });
@@ -134,7 +133,7 @@ class VerificationCode extends React.Component {
                     <Text style={styles.title}>SMS verification code has been sent to your phone number. Please enter the code below.</Text>
 
                     <TouchableOpacity style={styles.resendButton} onPress={() => this.sendPushNotification()}>
-                        <Text style={styles.resentText}>Resend</Text>
+                        <Text style={styles.resentText}>{this.state.first? "Send Code" : "Resend Code"}</Text>
                     </TouchableOpacity>
                     <CodeInput
                         ref="codeInput"
