@@ -50,13 +50,9 @@ class VerificationCode extends React.Component {
     }
 
     async registerForPushNotifications() {
-        const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
         if (status !== 'granted') {
-            const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-            if (status !== 'granted') {
-                return;
-            }
+            return;
         }
 
         const token = await Notifications.getExpoPushTokenAsync();

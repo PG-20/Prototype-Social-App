@@ -60,6 +60,7 @@ class HomeScreen extends React.Component {
         try {
 
             const result = await Google.logInAsync({
+                androidStandaloneAppClientId: "646248863161-g4ethrgs56h9ftbfo6pv8b31m5nj1kmb.apps.googleusercontent.com",
                 androidClientId: "646248863161-g4ethrgs56h9ftbfo6pv8b31m5nj1kmb.apps.googleusercontent.com",
                 iosClientId: "646248863161-tanc3558klnklvpcnksp2p5afr2aar8f.apps.googleusercontent.com",
                 scopes: ['profile', 'email'],
@@ -114,8 +115,8 @@ class HomeScreen extends React.Component {
                     <TouchableOpacity>
                         <Text style={styles.forgot}> Forgot Password? </Text>
                     </TouchableOpacity>
-                    <TouchableHighlight>
-                        <Text style={styles.logIn} onPress={this.onLogin}> Login </Text>
+                    <TouchableHighlight onPress={this.onLogin}>
+                        <Text style={styles.logIn}> Login </Text>
                     </TouchableHighlight>
                     <Text style={[styles.logIn, styles.text]}>Or Sign up with</Text>
                     <View style={[styles.signupthirdparty]}>

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "challenge",
-    "description": "A very interesting project.",
+    "description": "challenge",
     "slug": "challenge",
     "privacy": "public",
     "sdkVersion": "30.0.0",
@@ -21,7 +21,17 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.challenge.challenge"
+    },
+    "android": {
+      "package": "com.challenge.challenge",
+      "config" : {
+        "googleSignIn": {
+          "apiKey" : "AIzaSyAPdZ3-v7t07gPrH7lAt45o0dL75j84VRk",
+          "certificateHash" : "595AD04B3C6CB7960420F0A452D2B60F4CEBA473"
+        }
+      }
     }
   }
 }
