@@ -48,7 +48,6 @@ class SignUp extends React.Component {
     };
 
     componentWillUnmount() {
-        console.log('hi');
         this.setState({modalVisible: false})
     }
 

@@ -22,10 +22,10 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.challenge.challenge"
+      "bundleIdentifier": "host.exp.exponent"
     },
     "android": {
-      "package": "com.challenge.challenge",
+      "package": "host.exp.exponent",
       "config" : {
         "googleSignIn": {
           "apiKey" : "AIzaSyAPdZ3-v7t07gPrH7lAt45o0dL75j84VRk",

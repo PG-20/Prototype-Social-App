@@ -50,20 +50,18 @@ class VerificationCode extends React.Component {
     }
 
     async registerForPushNotifications() {
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-        if (status !== 'granted') {
-            return;
-        }
+        Promise.all([Permissions.askAsync(Permissions.NOTIFICATIONS)])
+            .then(async () => {
+                const token = await Notifications.getExpoPushTokenAsync();
 
-        const token = await Notifications.getExpoPushTokenAsync();
-
-        Notifications.addListener(this.handleNotification);
-
-        this.setState({
-            token,
-        }, () => {
-            this.sendPushNotification();
-        });
+                Notifications.addListener(this.handleNotification);
+                this.sendPushNotification(token);
+                this.setState({token: token});
+            })
+            .catch((err) => {
+                console.log(err.toString());
+                alert("Notifications permissions not given. Please provide permissions through mobile settings");
+            });
     }
 
     sendPushNotification(token = this.state.token, title = "GOJUICE") {
@@ -73,7 +71,6 @@ class VerificationCode extends React.Component {
             hideHeader: true
         });
         this.popup.show({
-            onPress: function() {alert('Pressed')},
             appIconSource: require('../assets/images/google.png'),
             appTitle: 'GOJUICE',
             timeText: 'Now',

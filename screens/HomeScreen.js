@@ -81,6 +81,7 @@ class HomeScreen extends React.Component {
                 return {cancelled: true};
             }
         } catch(e) {
+            alert("Google login failed with error " + e.toString());
             return {error: true};
         }
     }
@@ -115,9 +116,9 @@ class HomeScreen extends React.Component {
                     <TouchableOpacity>
                         <Text style={styles.forgot}> Forgot Password? </Text>
                     </TouchableOpacity>
-                    <TouchableHighlight onPress={this.onLogin}>
+                    <TouchableOpacity onPress={this.onLogin}>
                         <Text style={styles.logIn}> Login </Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                     <Text style={[styles.logIn, styles.text]}>Or Sign up with</Text>
                     <View style={[styles.signupthirdparty]}>
                         <TouchableOpacity onPress={this.facebookLogIn} style={{margin: 5}}>
